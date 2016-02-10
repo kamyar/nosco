@@ -1,0 +1,46 @@
+project:
+  name: nosco
+  minor_bump_keyword: feat
+  build_format: '{name}-v{major}.{minor}.{patch}-{hash}+{ui_hash}'
+  generate:
+  - app: mercurial
+    prefix: ui_
+    repo: /home/kamyar/Projects/viero_webui
+    hash_length: 4
+  - app: mercurial
+    repo: /home/kamyar/Projects/nosco_test
+    hash_length: 4
+    branch_delimeter: /
+  history:
+    0: null
+    1:
+      1:
+        0:
+          hash: f16a
+          name: nosco
+          ui_hash: 4e0c
+    3:
+      0:
+        0:
+          hash: 78b3
+          name: nosco
+          ui_hash: 4e0c
+        1:
+          hash: 69cb
+          name: nosco
+          ui_hash: 4e0c
+      1:
+        0:
+          hash: '7294'
+          name: nosco
+          ui_hash: 4e0c
+        1:
+          hash: '4668'
+          name: nosco
+          ui_hash: 4e0c
+    2:
+      1:
+        0:
+          hash: eeb0
+          name: nosco
+          ui_hash: 4e0c
