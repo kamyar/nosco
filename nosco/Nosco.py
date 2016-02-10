@@ -245,7 +245,7 @@ class Nosco():
         # print self.check_duplication(res.copy())
         dc = self.check_duplication(res.copy())
         if( dc == 2 and not HAS_MINOR_BUMPED):
-            print "increase patch"
+            # print "increase patch"
             res['patch'] += 1
         return res
 
