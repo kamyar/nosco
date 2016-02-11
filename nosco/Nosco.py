@@ -1,6 +1,6 @@
 
 import os
-from subprocess import check_output
+from subprocess import check_output, Popen
 
 import string
 
@@ -13,40 +13,60 @@ import pprint
 # Used to extract keys used in a format string
 formatter = string.Formatter()
 
-def MercurialInfo(project, module_args):
-    # prioritize the module info to project info
-    path = module_args['repo'] if 'repo' in module_args.keys() else project['path']
-    # if no prefix is provided, then no prefix
-    prefix = module_args.get('prefix', '')
-    delimeter = module_args.get('branch_delimeter', '')
-    hash_length = module_args.get('hash_length', 4)
-    # print(prefix)
+class MercurialInfo(object):
+    def __init__(self, project, module_args):
+        self.project = project
+        self.module_args = module_args
+        # prioritize the module info to project info
+        self.path = module_args['repo'] if 'repo' in module_args.keys() else project['path']
+        # if no prefix is provided, then no prefix
+        self.prefix = module_args.get('prefix', '')
+        self.delimeter = module_args.get('branch_delimeter', '')
+        self.hash_length = module_args.get('hash_length', 4)
+        # print(prefix)
 
-    hash_key = prefix+'hash'
-    desc_key = prefix+'desc'
-    branch_key = prefix+'branch'
-    major_key = prefix+'major'
+        self.hash_key = self.prefix+'hash'
+        self.desc_key = self.prefix+'desc'
+        self.branch_key = self.prefix+'branch'
+        self.major_key = self.prefix+'major'
 
-    hg_command = ['hg', '-R', path, "parents", "--template"]
-    res = {}
-    res[hash_key] = check_output(hg_command+["{node}"])[:hash_length]
-    res[desc_key] = check_output(hg_command+["{desc|firstline}"])
-    res[branch_key] = check_output(hg_command+["{branch}"])
-    # print branch_key, "|", res[branch_key]
-    if(delimeter):
+        self.hg_command = ['hg', '-R', self.path, "parents", "--template"]
+        self.hg_tag_command = ['hg', '-R', self.path, "tag"]
+
+        # self.generate_keys()
+
+    def generate_keys(self):
+        res = {}
+        res[self.hash_key] = check_output(self.hg_command+["{node}"])[:self.hash_length]
+        res[self.desc_key] = check_output(self.hg_command+["{desc|firstline}"])
+        res[self.branch_key] = check_output(self.hg_command+["{branch}"])
+        # print branch_key, "|", res[branch_key]
+        if(self.delimeter):
+            try:
+                res[self.major_key] = int(res[self.branch_key].split("/")[1])
+            except IndexError as e:
+                print("Branch name is not formatted correctly")
+        else:
+            res[self.major_key] = res[self.branch_key]
+
+        if(res[self.desc_key].startswith(self.project["minor_bump_keyword"])):
+            res["minor_bump"] = True;
+        else:
+            res["minor_bump"] = False;
+        # print res
+        return res
+
+    def post_generate(self, generated_ver):
+        # print self.module_args.get("tag", False)
+        if self.module_args.get("tag", False):
+            self.tag_repo(generated_ver)
+
+    def tag_repo(self, tag):
         try:
-            res[major_key] = int(res[branch_key].split("/")[1])
-        except IndexError as e:
-            print("Branch name is not formatted correctly")
-    else:
-        res[major_key] = res[branch_key]
-
-    if(res[desc_key].startswith(project["minor_bump_keyword"])):
-        res["minor_bump"] = True;
-    else:
-        res["minor_bump"] = False;
-    # print res
-    return res
+            Popen(self.hg_tag_command+[tag])
+            return 0
+        except:
+            return -1
 
 
 nosco_modules = {'mercurial': MercurialInfo}
@@ -72,6 +92,8 @@ class Nosco():
         self.conf_path = os.path.join(conf_dir, conf_name)
         self.read_conf();
         self._generated_dict = {}
+
+        self.generator_modules = []
 
 
     @property
@@ -179,8 +201,10 @@ class Nosco():
         for module in self.conf["project"]["generate"]:
             app = module["app"]
             if(app in nosco_modules):
-                module_results = nosco_modules[app](self.project, module)
+                curr_module = nosco_modules[app](self.project, module)
+                module_results = curr_module.generate_keys()
                 self._generated_dict.update(module_results)
+                self.generator_modules.append(curr_module)
             else:
                 print("ERROR: Module '{missing_module}' generator is not defined"\
                         .format(missing_module=app))
@@ -262,6 +286,13 @@ class Nosco():
             print("ERROR: Entry Already Exists, commit your changes!")
             return 1
         version_string =  build_format.format(**format_dict);
+
+
+        if not read_only:
+            for gm in self.generator_modules:
+                gm.post_generate(version_string)
+
+
         return version_string
 
 

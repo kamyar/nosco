@@ -1,5 +1,4 @@
 project:
-  name: nosco
   minor_bump_keyword: feat
   build_format: '{name}-v{major}.{minor}.{patch}-{hash}+{ui_hash}'
   generate:
@@ -9,6 +8,7 @@ project:
     hash_length: 4
   - app: mercurial
     repo: /home/kamyar/Projects/nosco_test
+    tag: true
     hash_length: 4
     branch_delimeter: /
   history:
