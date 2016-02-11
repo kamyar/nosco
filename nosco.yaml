@@ -1,4 +1,5 @@
 project:
+  name: nosco
   minor_bump_keyword: feat
   build_format: '{name}-v{major}.{minor}.{patch}-{hash}+{ui_hash}'
   generate:
