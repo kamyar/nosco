@@ -129,7 +129,7 @@ class Nosco():
 
 
 
-    def addNewEntry(self, new_entry):
+    def addNewEntry(self, new_entry, read_only):
         "Add a new entry to the history section and update the yaml file."
 
         new_major = new_entry['major']
@@ -137,6 +137,8 @@ class Nosco():
         new_patch = new_entry['patch']
 
         dup_check = self.check_duplication(new_entry)
+        if read_only:
+            return dup_check
         if(dup_check == 0):
             return dup_check
 
@@ -250,12 +252,13 @@ class Nosco():
         return res
 
 
-    def get_version(self):
+    def get_version(self, read_only=True):
         # self.complement_keys()
         format_dict = self.get_format_dict()
         build_format = self.conf['project']['build_format']
-        update_history_result = self.addNewEntry(format_dict.copy())
-        if(not update_history_result):
+        # if not read_only:
+        update_history_result = self.addNewEntry(format_dict.copy(), read_only)
+        if(not update_history_result and not read_only):
             print("ERROR: Entry Already Exists, commit your changes!")
             return 1
         version_string =  build_format.format(**format_dict);
