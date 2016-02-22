@@ -1,7 +1,7 @@
  # -*- coding: utf-8 -*-
 #####################################################
-#           nosco - semantic version manager        #
-#  nōscō(/ˈnoːs.koː/ - in possession of knowledge)  #
+#           nosco v0.5 - semantic version manager   #
+#  nōscō(/ˈnoːs.koː/ - in possession of knowledge)   #
 #                                                   #
 #       Semantic Version Manager(http://semver.org) #
 #   Aims to provide a simple interface for          #

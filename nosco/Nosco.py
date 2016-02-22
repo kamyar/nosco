@@ -1,4 +1,16 @@
+ # -*- coding: utf-8 -*-
 
+
+"""nosco v0.5 - semantic version manager
+  nōscō(/ˈnoːs.koː/ - in possession of knowledge)
+
+       Semantic Version(http://semver.org)
+   Manager Aims to provide a simple interface for
+   determining the build version of software
+   using rules privided in nosco.yaml
+
+ Author: Kamyar Ghasemlou<kamyar@kamy.me>
+"""
 import os
 from subprocess import check_output, Popen
 
