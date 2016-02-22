@@ -40,6 +40,7 @@ class MercurialInfo(object):
         self.hash_key = self.prefix+'hash'
         self.desc_key = self.prefix+'desc'
         self.branch_key = self.prefix+'branch'
+        self.branch_cat = self.prefix+'branch_cat'
         self.major_key = self.prefix+'major'
 
         self.hg_command = ['hg', '-R', self.path, "parents", "--template"]
@@ -55,11 +56,13 @@ class MercurialInfo(object):
         # print branch_key, "|", res[branch_key]
         if(self.delimeter):
             try:
-                res[self.major_key] = int(res[self.branch_key].split("/")[1])
+                res[self.branch_cat], res[self.major_key] = res[self.branch_key].split("/")
+                res[self.major_key] = int(res[self.major_key])
             except IndexError as e:
                 print("Branch name is not formatted correctly")
         else:
             res[self.major_key] = res[self.branch_key]
+            res[self.branch_cat] = res[self.branch_key]
 
         if(res[self.desc_key].startswith(self.project["minor_bump_keyword"])):
             res["minor_bump"] = True;
