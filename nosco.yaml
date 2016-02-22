@@ -1,16 +1,16 @@
 project:
   name: nosco
   minor_bump_keyword: feat
-  build_format: '{name}-v{major}.{minor}.{patch}-{hash}+{ui_hash}'
+  build_format: '{name}-v{major}.{minor}.{patch}-{branch_cat:.3}-{hash:.4}+{ui_hash:.4}'
   generate:
   - app: mercurial
     prefix: ui_
     repo: /home/kamyar/Projects/viero_webui
-    hash_length: 4
+    hash_length: -1
   - app: mercurial
     repo: /home/kamyar/Projects/nosco_test
     tag: true
-    hash_length: 4
+    hash_length: -1
     branch_delimeter: /
   history:
     0: null

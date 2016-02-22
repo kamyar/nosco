@@ -273,7 +273,7 @@ class Nosco():
                 res[k] = static_dict[k]
             if(k not in res):
                 print("ERROR: {missing_key} has not been declared or generated, please check your configuration...".format(missing_key=k))
-        # only patch is changing(major exists, minor ahs not changed)
+        # only patch is changing(major exists, minor has not changed)
 
         dup_stat = self.check_duplication(res.copy())
         if dup_stat == 0:   # hashes are equal and repos have not changed
