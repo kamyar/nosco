@@ -136,6 +136,8 @@ class Nosco():
         del new_entry['major']
         del new_entry['minor']
         del new_entry['patch']
+        for ignore_key in self.project["hist_ignore_keys"]:
+            del new_entry[ignore_key]
 
         try:
             majors = list(self.history.keys())
@@ -248,13 +250,13 @@ class Nosco():
         return max_minor, max_patch
 
 
-    def get_format_dict(self):
+    def get_format_dict(self, meta_keys={}):
         # keys used for formatting
         used_keys = self.get_used_keys()
         # keys provided by the conf file
         static_dict = self.project
 
-        res = {}
+        res = meta_keys
 
         HAS_MINOR_BUMPED = False
 
@@ -291,9 +293,9 @@ class Nosco():
         return res
 
 
-    def get_version(self, read_only=True):
+    def get_version(self, read_only=True, meta_keys={}):
         # self.complement_keys()
-        format_dict = self.get_format_dict()
+        format_dict = self.get_format_dict(meta_keys=meta_keys)
         build_format = self.conf['project']['build_format']
         # if not read_only:
         update_history_result = self.addNewEntry(format_dict.copy(), read_only)

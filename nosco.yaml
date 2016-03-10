@@ -2,6 +2,8 @@ project:
   name: nosco
   minor_bump_keyword: feat
   build_format: '{name}-v{major}.{minor}.{patch}-{branch_cat:.3}-{hash:.4}+{ui_hash:.4}'
+  hist_ignore_keys:
+  - sample_key_to_be_ignored_from_history
   generate:
   - app: mercurial
     prefix: ui_
