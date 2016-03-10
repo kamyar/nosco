@@ -1,7 +1,7 @@
 ### Nosco v1.0- Smart Semantic Versioning Helper
 ====
 
-**Nosco** - _[latin; in possession of knowledge, discern]_  
+**Nosco** - _[latin; in possession of knowledge, discern]_
 
 Built to improve build process and solve version management problems. Follows Semantic Versioning
 Scheme, has a simple and easy to understand YAML based configuration and module based extendable
@@ -21,9 +21,11 @@ structure.
 #### TODO
 - ~~Writing hg module~~
 - Writing git module
+- Add 'Build Certificate' generation
+- Writing Misc. modules(machine arch., time, builder, etc.)
 - More examples
 - Test
-- Add 'Build Certificate' generation
+- Integrate ruamel.yaml (for comment preservation, native ordered yaml support etc.)
 
 
 #### CONTRIBUTE
