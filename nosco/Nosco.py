@@ -15,6 +15,7 @@ import os
 from subprocess import check_output, Popen
 
 import string
+import datetime
 
 # in order to preserve the yaml structure
 from .ordered_yaml import ordered_load, ordered_dump
@@ -83,8 +84,21 @@ class MercurialInfo(object):
         except:
             return -1
 
+class DateInfo(object):
+    def __init__(self, project, module_args):
+        pass
 
-nosco_modules = {'mercurial': MercurialInfo}
+    def generate_keys(self):
+        res = {}
+        res['date'] = datetime.date.today().isoformat()
+        return res
+
+    def post_generate(self, generated_ver):
+        pass
+
+
+nosco_modules = {'mercurial': MercurialInfo,
+                 'date': DateInfo}
 
 
 def key_in_dict(d, k):
@@ -136,8 +150,9 @@ class Nosco():
         del new_entry['major']
         del new_entry['minor']
         del new_entry['patch']
-        for ignore_key in self.project["hist_ignore_keys"]:
-            del new_entry[ignore_key]
+        for k in new_entry.keys():
+            if k not in self.project['history_record_keys']:
+                del new_entry[k]
 
         try:
             majors = list(self.history.keys())
@@ -257,7 +272,7 @@ class Nosco():
         static_dict = self.project
 
         res = meta_keys
-
+        res.update(self.generated_dict)
         HAS_MINOR_BUMPED = False
 
         res['minor'], res['patch'] = self.find_last_minor(self.generated_dict['major'])
@@ -294,23 +309,47 @@ class Nosco():
 
 
     def get_version(self, read_only=True, meta_keys={}):
-        # self.complement_keys()
         format_dict = self.get_format_dict(meta_keys=meta_keys)
         build_format = self.conf['project']['build_format']
-        # if not read_only:
+
+
         update_history_result = self.addNewEntry(format_dict.copy(), read_only)
+
+        VERSION_EXISTS = 0
+
         if(not update_history_result and not read_only):
-            print("ERROR: Entry Already Exists, commit your changes!")
-            return 1
+            # print("ERROR: Entry Already Exists, commit your changes!")
+            VERSION_EXISTS = 1
+            # return 1
         version_string =  build_format.format(**format_dict);
 
+        format_dict["ver_str"] = version_string
+
+        # print format_dict
+        # For each cert in project if any
+        for cert in self.project.get("certificates", []):
+            name = cert["name"]
+            template = cert["template"]
+            target_raw = cert["target"]
+            try:
+
+                # template_file_obj = open(template, "r")
+                template_content = open(template, "r").read()
+
+                target_file = target_raw.format(**format_dict)
+                templated_formatted_content = template_content.format(**format_dict)
+                open(target_file, "w").write(templated_formatted_content)
+                # print formatted_template
+            except Exception as e:
+                print name, "failed with"
+                print e
 
         if not read_only:
             for gm in self.generator_modules:
                 gm.post_generate(version_string)
 
 
-        return version_string
+        return (VERSION_EXISTS, version_string)
 
 
 

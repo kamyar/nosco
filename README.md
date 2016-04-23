@@ -21,8 +21,8 @@ structure.
 #### TODO
 - ~~Writing hg module~~
 - Writing git module
-- Add 'Build Certificate' generation
-- Writing Misc. modules(machine arch., time, builder, etc.)
+- ~~Add 'Build Certificate' generation~~
+- Writing Misc. modules(machine arch., ~~time~~, builder, etc.)
 - More examples
 - Test
 - Integrate ruamel.yaml (for comment preservation, native ordered yaml support etc.)

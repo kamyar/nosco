@@ -1,0 +1,9 @@
+{name} Build Certificate - {date}
+
+Version Info:
+  Major:            {major}
+  Minor:            {minor}
+  Patch:            {patch}
+  Branch Category:  {branch_cat}
+  Qt App Hash:      {hash}
+  Web UI Hash:      {ui_hash}
