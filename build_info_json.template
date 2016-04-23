@@ -1,0 +1,5 @@
+{{
+    "version": "{major}.{minor}.{patch}",
+    "qt_hash": "{hash:.10}",
+    "ui_hash": "{ui_hash:.10}"
+}}

@@ -17,6 +17,9 @@ project:
   - name: Build Certificate
     template: build_notes.template
     target: '{name}-v{major}.{minor}.{patch}.txt'
+  - name: Build Info Json
+    template: build_info_json.template
+    target: '{name}_info.json'
   history_record_keys:
   - hash
   - ui_hash
